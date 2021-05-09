@@ -2,6 +2,7 @@ import Chart from 'react-apexcharts';
 import axios from 'axios';
 import { BASE_ULR } from 'utils/request';
 import { AmountGroupedBySeller } from 'types/Sale';
+import { useEffect, useState } from 'react';
 
 type ChartData = {
     labels: string[];
@@ -10,19 +11,19 @@ type ChartData = {
 
 const DonutChart = () => {
 
-    let chartData: ChartData = {labels: [], series: []};
+    const [chartData, setChartData] = useState<ChartData>({ labels: [], series: [] });
 
-    axios.get(`${BASE_ULR}/sales/amountGroupedBySeller`)
-    .then(response => {
-        const data = response.data as AmountGroupedBySeller[];
+    useEffect(() => {
+        axios.get(`${BASE_ULR}/sales/amountGroupedBySeller`)
+            .then(response => {
+                const data = response.data as AmountGroupedBySeller[];
 
-        const l = data.map(x => x.sellerName)
-        const s = data.map(x => x.sumsales)
+                const l = data.map(x => x.sellerName)
+                const s = data.map(x => x.sumSales)
 
-        chartData = {labels: l, series: s}
-
-        console.log(response.data)
-    })
+                setChartData({ labels: l, series: s })
+            });
+    }, []);
 
     const options = {
         legend: {
@@ -31,7 +32,7 @@ const DonutChart = () => {
     };
     return (
         <Chart
-            options={{ ...options, labels : chartData.labels }}
+            options={{ ...options, labels: chartData.labels }}
             series={chartData.series}
             type="donut"
             height="240"
