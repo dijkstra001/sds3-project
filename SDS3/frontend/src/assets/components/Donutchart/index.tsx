@@ -1,22 +1,38 @@
 import Chart from 'react-apexcharts';
+import axios from 'axios';
+import { BASE_ULR } from 'utils/request';
+import { AmountGroupedBySeller } from 'types/Sale';
+
+type ChartData = {
+    labels: string[];
+    series: number[];
+};
 
 const DonutChart = () => {
+
+    let chartData: ChartData = {labels: [], series: []};
+
+    axios.get(`${BASE_ULR}/sales/amountGroupedBySeller`)
+    .then(response => {
+        const data = response.data as AmountGroupedBySeller[];
+
+        const l = data.map(x => x.sellerName)
+        const s = data.map(x => x.sumsales)
+
+        chartData = {labels: l, series: s}
+
+        console.log(response.data)
+    })
 
     const options = {
         legend: {
             show: true
         }
     };
-
-    const mockData = {
-        series: [477138, 499928, 444867, 220426, 473088],
-        labels: ['Anakin', 'Barry Allen', 'Kal-El', 'Logan', 'Padmé']
-    };
-
     return (
         <Chart
-            options={{ ...options, labels: mockData.labels }}
-            series={mockData.series}
+            options={{ ...options, labels : chartData.labels }}
+            series={chartData.series}
             type="donut"
             height="240"
         />
