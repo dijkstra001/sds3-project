@@ -1,6 +1,6 @@
 import Chart from 'react-apexcharts';
 import axios from 'axios';
-import { BASE_ULR } from 'utils/request';
+import { BASE_URL } from 'utils/request';
 import { AmountGroupedBySeller } from 'types/Sale';
 import { useEffect, useState } from 'react';
 
@@ -14,7 +14,7 @@ const DonutChart = () => {
     const [chartData, setChartData] = useState<ChartData>({ labels: [], series: [] });
 
     useEffect(() => {
-        axios.get(`${BASE_ULR}/sales/amountGroupedBySeller`)
+        axios.get(`${BASE_URL}/sales/amountGroupedBySeller`)
             .then(response => {
                 const data = response.data as AmountGroupedBySeller[];
 
